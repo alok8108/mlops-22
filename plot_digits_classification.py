@@ -31,7 +31,7 @@ print("\nImage size = ", {digits.images[0].shape})
 # flatten the images
 images_database = {}
 def resize(size):
-    print(f"\n----------FOR IMAGE SIZE ({size},{size})-----------\n")
+    print(f"For Image Size of ({size},{size})")
     n_samples = len(digits.images)
     images_database[str(size)] = np.zeros((n_samples,size, size))
     for i in range(0,n_samples):
