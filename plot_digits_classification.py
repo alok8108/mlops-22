@@ -17,6 +17,9 @@ train_frac = 0.8
 test_frac = 0.1
 dev_frac = 0.1
 
+train_list=[] 
+test_list=[]
+dev_list=[]
 #PART: load dataset -- data from csv, tsv, jsonl, pickle
 digits = datasets.load_digits()
 #PART: sanity check visualization of the data
@@ -85,6 +88,9 @@ def model_prediction(size = 8):
         dev_acc = metrics.accuracy_score(y_pred=predict_dev, y_true=y_dev)
         test_acc = metrics.accuracy_score(y_pred=predict_test, y_true=y_test)
         print(cur_parameters['C'], cur_parameters['gamma'], train_acc, dev_acc, test_acc)
+        train_list.append(train_acc)
+        test_list.append(test_acc)
+        dev_list.append(dev_acc)
 
         # 3. identify the combination-of-hyper-parameter for which validation set accuracy is the highest. 
         if dev_acc > best_acc:
@@ -93,8 +99,9 @@ def model_prediction(size = 8):
 
     print("Combinations of Hyperparameters found best:", end = " ")
     print(cur_parameters)
-
+import statistics
 model_prediction()
-model_prediction(12)
-model_prediction(16)
-model_prediction(20)
+print("Mean of train_list, test_list and dev_list are :",statistics.mean(train_list),statistics.mean(test_list),statistics.mean(dev_list))
+print("Median of train_list, test_list and dev_list are :",statistics.median(train_list),statistics.median(test_list),statistics.median(dev_list))
+print("Min of train_list, test_list and dev_list are :",min(train_list),min(test_list),min(dev_list))
+print("Max of train_list, test_list and dev_list are :",max(train_list),max(test_list),max(dev_list))
