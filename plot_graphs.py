@@ -6,6 +6,7 @@
 
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, svm, metrics
+import pdb
 
 from utils import (
     preprocess_digits,
@@ -13,9 +14,10 @@ from utils import (
     h_param_tuning,
     data_viz,
     pred_image_viz,
+    get_all_h_param_comb,
+    tune_and_save,
 )
 from joblib import dump, load
-
 
 train_frac, dev_frac, test_frac = 0.8, 0.1, 0.1
 assert train_frac + dev_frac + test_frac == 1.0
@@ -24,9 +26,12 @@ assert train_frac + dev_frac + test_frac == 1.0
 gamma_list = [0.01, 0.005, 0.001, 0.0005, 0.0001]
 c_list = [0.1, 0.2, 0.5, 0.7, 1, 2, 5, 7, 10]
 
-h_param_comb = [{"gamma": g, "C": c} for g in gamma_list for c in c_list]
+params = {}
+params["gamma"] = gamma_list
+params["C"] = c_list
 
-assert len(h_param_comb) == len(gamma_list) * len(c_list)
+h_param_comb = get_all_h_param_comb(params)
+
 
 # PART: load dataset -- data from csv, tsv, jsonl, pickle
 digits = datasets.load_digits()
@@ -47,17 +52,13 @@ clf = svm.SVC()
 metric = metrics.accuracy_score
 
 
-best_model, best_metric, best_h_params = h_param_tuning(
-    h_param_comb, clf, x_train, y_train, x_dev, y_dev, metric
+actual_model_path = tune_and_save(
+    clf, x_train, y_train, x_dev, y_dev, metric, h_param_comb, model_path=None
 )
-
-# save the best_model
-best_param_config = "_".join([h + "=" + str(best_h_params[h]) for h in best_h_params])
-dump(best_model, "svm_" + best_param_config + ".joblib")
 
 
 # 2. load the best_model
-best_model = load("svm_" + best_param_config + ".joblib")
+best_model = load(actual_model_path)
 
 # PART: Get test set predictions
 # Predict the value of the digit on the test subset
@@ -71,6 +72,3 @@ print(
     f"Classification report for classifier {clf}:\n"
     f"{metrics.classification_report(y_test, predicted)}\n"
 )
-
-print("Best hyperparameters were:")
-print(best_h_params)
