@@ -19,7 +19,7 @@ from utils import (
 )
 from joblib import dump, load
 
-train_frac, dev_frac, test_frac = 0.8, 0.1, 0.1
+train_frac, dev_frac, test_frac = 0.7, 0.1, 0.1
 assert train_frac + dev_frac + test_frac == 1.0
 
 # 1. set the ranges of hyper parameters
