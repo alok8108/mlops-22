@@ -1,3 +1,4 @@
+from calendar import c
 import sys, os
 import numpy as np
 from joblib import load
@@ -54,6 +55,11 @@ def test_tune_and_save():
     assert actual_model_path == model_path
     assert os.path.exists(actual_model_path)
     assert type(load(actual_model_path)) == type(clf)
+
+def tst_not_clsfr():
+    Inp=[0,1,2,3,4,5,6,7,8,9]
+    cls = np.array(Inp)
+    print(np.unique(tree_pre),c)
 
 # what more test cases should be there
 # irrespective of the changes to the refactored code.
