@@ -59,7 +59,7 @@ def test_tune_and_save():
 def tst_not_clsfr():
     Inp=[0,1,2,3,4,5,6,7,8,9]
     cls = np.array(Inp)
-    print(np.unique(tree_pre),c)
+    print(np.unique(cls),c)
 
 # what more test cases should be there
 # irrespective of the changes to the refactored code.
