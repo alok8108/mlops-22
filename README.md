@@ -39,3 +39,17 @@ weighted avg       0.97      0.97      0.97       179
 
 Best hyperparameters were:
 {'gamma': 0.0001, 'C': 5}
+
+
+
+
+
+create docker folder inside that create Dockerfile and paste all command from classroom
+now in dockerfile comment all line except first line
+now run  docker build -t exp:v1 -f docker/Dockerfile .
+than run docker images and you can see exp container with v1 version
+to run image docker run -it exp:v1 (it is proof our image  works now type exit to exit)
+now go in Dockerfile and remove all comment and make first line comment 
+again run docker build -t exp:v1 -f docker/Dockerfile .
+to run image docker run -it exp:v1
+(now your code is run without any prerequirements)
