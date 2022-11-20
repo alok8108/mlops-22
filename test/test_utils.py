@@ -21,6 +21,7 @@ def test_get_h_param_comb():
 
     assert len(h_param_comb) == len(gamma_list) * len(c_list)
 
+
 def helper_h_params():
     # small number of h params
     gamma_list = [0.01, 0.005]

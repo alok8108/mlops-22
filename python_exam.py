@@ -1,5 +1,5 @@
 from sklearn import datasets
-
+import argparse
 from sklearn.model_selection import train_test_split
 
 # we will be preprocessing the data first
@@ -26,7 +26,7 @@ def same_test_split():
         shaped_data, label, test_size=prop_test, shuffle=True, random_state = 101
     )
     
-    X_train2, X_test2, y_train2, y_test2 = train_test_split(
+    X_train2, X_test2, y_train2, y_test_2 = train_test_split(
         shaped_data, label, test_size=test_frac, shuffle=True, random_state = 101
     )
     
@@ -34,7 +34,7 @@ def same_test_split():
     assert (x_train_1 == X_train2).all()
     assert (x_test_1 == X_test2).all()
     assert (y_train_1 == y_train2).all()
-    assert (y_test1 == y_test2).all()
+    assert (y_test1 == y_test_2).all()
     
 
 

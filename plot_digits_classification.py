@@ -105,6 +105,8 @@
 # # plt.show()
 
 from sklearn import datasets, svm, metrics, tree
+from sklearn.metrics import accuracy_score, f1_score
+import argparse
 import pdb
 
 from utils import (
@@ -148,40 +150,73 @@ del digits
 metric_list = [metrics.accuracy_score, macro_f1]
 h_metric = metrics.accuracy_score
 
-n_cv = 5
+n_cv = 1
 results = {}
-for n in range(n_cv):
-    x_train, y_train, x_dev, y_dev, x_test, y_test = train_dev_test_split(
-        data, label, train_frac, dev_frac
-    )
+# argparse
+parser = argparse.ArgumentParser()
+
+
+parser.add_argument('--clf_name', type=str, required=True)
+# parser.add_argument('--tree', type=str, required=True)
+parser.add_argument('--random_state', type=int, required=False)
+args = parser.parse_args()
+
+x_train, y_train, x_dev, y_dev, x_test, y_test = train_dev_test_split(
+        data, label, train_frac, dev_frac, args.random_state
+)
+
+# for n in range(n_cv):
     # PART: Define the model
     # Create a classifier: a support vector classifier
-    models_of_choice = {
-        "svm": svm.SVC(),
-        "decision_tree": tree.DecisionTreeClassifier(),
-    }
-    for clf_name in models_of_choice:
-        clf = models_of_choice[clf_name]
-        print("[{}] Running hyper param tuning for {}".format(n,clf_name))
-        actual_model_path = tune_and_save(
-            clf, x_train, y_train, x_dev, y_dev, h_metric, h_param_comb[clf_name], model_path=None
-        )
+models_of_choice = {
+    "svm": svm.SVC(),
+    # "decision_tree": tree.DecisionTreeClassifier(),
+}
+for clf_name in models_of_choice:
+    clf = models_of_choice[clf_name]
+    print("Running hyper param tuning for {}".format(clf_name))
+    actual_model_path = tune_and_save(
+        clf, x_train, y_train, x_dev, y_dev, h_metric, h_param_comb[clf_name], model_path=None
+    )
 
-        # 2. load the best_model
-        best_model = load(actual_model_path)
+    # 2. load the best_model
+    best_model = load(actual_model_path)
 
-        # PART: Get test set predictions
-        # Predict the value of the digit on the test subset
-        predicted = best_model.predict(x_test)
-        if not clf_name in results:
-            results[clf_name]=[]    
+    # PART: Get test set predictions
+    # Predict the value of the digit on the test subset
+    predicted = best_model.predict(x_test)
+    # if not clf_name in results:
+    #     results[clf_name]=[]    
 
-        results[clf_name].append({m.__name__:m(y_pred=predicted, y_true=y_test) for m in metric_list})
-        # 4. report the test set accurancy with that best model.
-        # PART: Compute evaluation metrics
-        print(
-            f"Classification report for classifier {clf}:\n"
-            f"{metrics.classification_report(y_test, predicted)}\n"
-        )
+    # results[clf_name].append({m.__name__:m(y_pred=predicted, y_true=y_test) for m in metric_list})
+    # # 4. report the test set accurancy with that best model.
+    # # PART: Compute evaluation metrics
+    # print(
+    #     f"Classification report for classifier {clf}:\n"
+    #     f"{metrics.classification_report(y_test, predicted)}\n"
+    # )
+
+
+
+if args.clf_name == "svm":
+    svm_acc = accuracy_score(y_test,predicted)
+    svm_f1 = f1_score(y_test,predicted, average="macro")
+
+    print("svm_acc:", svm_acc)
+    print("svm_f1:", svm_f1)
+
+elif args.clf_name == "tree":
+    decision_tree = tree.DecisionTreeClassifier()
+    decision_tree = decision_tree.fit(x_train, y_train)
+
+
+    decision_tree_p = decision_tree.predict(x_test)
+
+    tree_acc = accuracy_score(y_test,decision_tree_p)
+    tree_f1 = f1_score(y_test,predicted, average="macro")
+
+    print("tree_acc:", tree_acc)
+    print("tree_f1:", tree_f1)
+
 
 print(results)

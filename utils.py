@@ -179,14 +179,14 @@ def pred_image_viz(x_test, predictions):
 # test to evaluate the performance of the model
 
 
-def train_dev_test_split(data, label, train_frac, dev_frac):
+def train_dev_test_split(data, label, train_frac, dev_frac, rs=81):
 
     dev_test_frac = 1 - train_frac
     x_train, x_dev_test, y_train, y_dev_test = train_test_split(
-        data, label, test_size=dev_test_frac, shuffle=True
+        data, label, test_size=dev_test_frac, random_state = rs
     )
     x_test, x_dev, y_test, y_dev = train_test_split(
-        x_dev_test, y_dev_test, test_size=(dev_frac) / dev_test_frac, shuffle=True
+        x_dev_test, y_dev_test, test_size=(dev_frac) / dev_test_frac, random_state=rs
     )
 
     return x_train, y_train, x_dev, y_dev, x_test, y_test
